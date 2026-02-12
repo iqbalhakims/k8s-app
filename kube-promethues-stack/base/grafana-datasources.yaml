@@ -1,0 +1,190 @@
+    ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
+    ## (permissions, dir tree) on mounted volumes before starting prometheus
+    initContainers: []
+
+    ## Priority class assigned to the Pods
+    ##
+    priorityClassName: ""
+
+    ## AdditionalPeers allows injecting a set of additional Alertmanagers to peer with to form a highly available cluster.
+    ##
+    additionalPeers: []
+
+    ## PortName to use for Alert Manager.
+    ##
+    portName: "http-web"
+
+    ## ClusterAdvertiseAddress is the explicit address to advertise in cluster. Needs to be provided for non RFC1918 [1] (public) addresses. [1] RFC1918: https://tools.ietf.org/html/rfc1918
+    ##
+    clusterAdvertiseAddress: false
+
+    ## clusterGossipInterval determines interval between gossip attempts.
+    ## Needs to be specified as GoDuration, a time duration that can be parsed by Go's time.ParseDuration() (e.g. 45ms, 30s, 1m, 1h20m15s)
+    clusterGossipInterval: ""
+
+    ## clusterPeerTimeout determines timeout for cluster peering.
+    ## Needs to be specified as GoDuration, a time duration that can be parsed by Go's time.ParseDuration() (e.g. 45ms, 30s, 1m, 1h20m15s)
+    clusterPeerTimeout: ""
+
+    ## clusterPushpullInterval determines interval between pushpull attempts.
+    ## Needs to be specified as GoDuration, a time duration that can be parsed by Go's time.ParseDuration() (e.g. 45ms, 30s, 1m, 1h20m15s)
+    clusterPushpullInterval: ""
+
+    ## clusterLabel defines the identifier that uniquely identifies the Alertmanager cluster.
+    clusterLabel: ""
+
+    ## ForceEnableClusterMode ensures Alertmanager does not deactivate the cluster mode when running with a single replica.
+    ## Use case is e.g. spanning an Alertmanager cluster across Kubernetes clusters with a single replica in each.
+    forceEnableClusterMode: false
+
+    ## Minimum number of seconds for which a newly created pod should be ready without any of its container crashing for it to
+    ## be considered available. Defaults to 0 (pod will be considered available as soon as it is ready).
+    minReadySeconds: 0
+
+    ## Additional configuration which is not covered by the properties above. (passed through tpl)
+    additionalConfig: {}
+
+    ## Additional configuration which is not covered by the properties above.
+    ## Useful, if you need advanced templating inside alertmanagerSpec.
+    ## Otherwise, use alertmanager.alertmanagerSpec.additionalConfig (passed through tpl)
+    additionalConfigString: ""
+
+  ## ExtraSecret can be used to store various data in an extra secret
+  ## (use it for example to store hashed basic auth credentials)
+  extraSecret:
+    ## if not set, name will be auto generated
+    # name: ""
+    annotations: {}
+    data: {}
+  #   auth: |
+  #     foo:$apr1$OFG3Xybp$ckL0FHDAkoXYIlH9.cysT0
+  #     someoneelse:$apr1$DMZX2Z4q$6SbQIfyuLQd.xmo/P0m2c.
+
+## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+##
+grafana:
+  enabled: true
+  namespaceOverride: ""
+
+  ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
+  ##
+  forceDeployDatasources: false
+
+  ## ForceDeployDashboard Create dashboard configmap even if grafana deployment has been disabled
+  ##
+  forceDeployDashboards: false
+
+  ## Deploy default dashboards
+  ##
+  defaultDashboardsEnabled: true
+
+  ## Deploy GrafanaDashboard CRDs that reference dashboards from ConfigMaps when grafana-operator is used
+  ## These settings control how dashboards are integrated with the Grafana Operator
+  ## Note: End user still need to create is own kind: GrafanaDataSource for Prometheus
+  ## eg:
+  ## apiVersion: grafana.integreatly.org/v1beta1
+  ## kind: GrafanaDatasource
+  ## metadata:
+  ##   name: prometheus
+  ##   annotations: {}
+  ## spec:
+  ##   allowCrossNamespaceImport: true
+  ##   instanceSelector:
+  ##     matchLabels:
+  ##       app: grafana
+  ##   datasource:
+  ##     name: prometheus
+  ##     type: prometheus
+  ##     access: proxy
+  ##     url: http://prometheus-operated.prometheus-stack.svc.cluster.local:9090
+  ##     isDefault: true
+  ##     jsonData:
+  ##       "tlsSkipVerify": true
+  ##       "timeInterval": "5s"
+  ##
+  operator:
+    ## Enable references to ConfigMaps containing dashboards in GrafanaDashboard CRs
+    ## Set to true to allow dashboards to be loaded from ConfigMap references
+    dashboardsConfigMapRefEnabled: false
+
+    ## Annotations for GrafanaDashboard Cr
+    ##
+    annotations: {}
+    ## Labels that should be matched kind: Grafana instance
+    ## Example: { app: grafana, category: dashboard }
+    ##
+    matchLabels: {}
+
+    ## How frequently the operator should resync resources (in duration format)
+    ## Controls how often dashboards are reconciled by the operator
+    ##
+    resyncPeriod: 10m
+
+    ## Which folder contains all dashboards in Grafana
+    ## This folder will be created on the Root level
+    ## Only one of 'folder', 'folderUID' or 'folderRef' can be set
+    ##
+    folder: General
+
+    ## Which UID of the target folder contains all dashboards in Grafana
+    ## This allows you to use subfolder hierarchy
+    ## Only one of 'folder', 'folderUID' or 'folderRef' can be set
+    ##
+    folderUID: null
+
+    ## Which GrafanaFolder reference contains all dashboards in Grafana
+    ## This allows you to use subfolder hierarchy.
+    ## Only one of 'folder', 'folderUID' or 'folderRef' can be set
+    ##
+    folderRef: null
+
+  ## Timezone for the default dashboards
+  ## Other options are: browser or a specific timezone, i.e. Europe/Luxembourg
+  ##
+  defaultDashboardsTimezone: utc
+
+  ## Editable flag for the default dashboards
+  ##
+  defaultDashboardsEditable: true
+
+  ## Default interval for Grafana dashboards
+  ##
+  defaultDashboardsInterval: 1m
+
+  # Administrator credentials when not using an existing secret (see below)
+  adminUser: admin
+  # adminPassword: strongpassword
+
+  # Use an existing secret for the admin user.
+  admin:
+    ## Name of the secret. Can be templated.
+    existingSecret: ""
+    userKey: admin-user
+    passwordKey: admin-password
+
+  rbac:
+    ## If true, Grafana PSPs will be created
+    ##
+    pspEnabled: false
+
+  ingress:
+    ## If true, Grafana Ingress will be created
+    ##
+    enabled: false
+
+    ## IngressClassName for Grafana Ingress.
+    ## Should be provided if Ingress is enable.
+    ##
+    # ingressClassName: nginx
+
+    ## Annotations for Grafana Ingress
+    ##
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    ## Labels to be added to the Ingress
+    ##
+    labels: {}
+
+    ## Hostnames.

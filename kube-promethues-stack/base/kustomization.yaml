@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - global-overrides.yaml
+  - crd-management.yaml
+  - rbac-and-security.yaml
+  - windows-monitoring.yaml
+  - default-rules.yaml
+  - alertmanager-base.yaml
+  - alertmanager-ingress.yaml
+  - alertmanager-service.yaml
+  - alertmanager-servicemonitor.yaml
+  - alertmanager-spec.yaml
+  - grafana-base.yaml
+  - grafana-ingress.yaml
+  - grafana-datasources.yaml
+  - grafana-alertmanager.yaml
+  - grafana-extra-datasources.yaml
+  - kubecomponents-monitoring.yaml
+  - kube-state-metrics.yaml
+  - node-exporter.yaml
+  - prometheus-operator-base.yaml
+  - prometheus-operator-webhook.yaml
+  - prometheus-operator-service.yaml
+  - prometheus-operator-servicemonitor.yaml
+  - prometheus-base.yaml
+  - prometheus-service.yaml
+  - prometheus-ingress.yaml
+  - prometheus-servicemonitor.yaml
+  - prometheus-spec-basic.yaml
+  - prometheus-spec-storage.yaml
+  - prometheus-spec-advanced.yaml
+  - prometheus-spec-security.yaml
+  - prometheus-spec-thanos.yaml
+  - prometheus-spec-custom.yaml
+  - thanosruler-base.yaml
+  - thanosruler-ingress.yaml
+  - thanosruler-service.yaml
+  - thanosruler-spec.yaml
+  - extra-manifests.yaml
+
+# Apply staging-specific patches here
+patchesStrategicMerge:
+  - staging-patches.yaml
+
+# Configure resource name prefixes/suffixes for staging
+nameSuffix: -staging

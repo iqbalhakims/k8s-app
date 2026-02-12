@@ -1,0 +1,70 @@
+        enabled: true
+        failureThreshold: 3
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+
+      ## Resource limits & requests
+      ##
+      resources: {}
+      # limits:
+      #   cpu: 200m
+      #   memory: 200Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 100Mi
+
+      # Required for use in managed kubernetes clusters (such as AWS EKS) with custom CNI (such as calico),
+      # because control-plane managed by AWS cannot communicate with pods' IP CIDR and admission webhooks are not working
+      ##
+      hostNetwork: false
+
+      ## Define which Nodes the Pods are scheduled on.
+      ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+      ##
+      nodeSelector: {}
+
+      ## Tolerations for use with node taints
+      ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+      ##
+      tolerations: []
+      # - key: "key"
+      #   operator: "Equal"
+      #   value: "value"
+      #   effect: "NoSchedule"
+
+      ## Assign custom affinity rules to the prometheus operator
+      ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+      ##
+      affinity: {}
+        # nodeAffinity:
+        #   requiredDuringSchedulingIgnoredDuringExecution:
+        #     nodeSelectorTerms:
+        #     - matchExpressions:
+        #       - key: kubernetes.io/e2e-az-name
+        #         operator: In
+        #         values:
+        #         - e2e-az1
+      #         - e2e-az2
+      dnsConfig: {}
+        # nameservers:
+        #   - 1.2.3.4
+        # searches:
+        #   - ns1.svc.cluster-domain.example
+        #   - my.dns.search.suffix
+        # options:
+        #   - name: ndots
+        #     value: "2"
+        #   - name: edns0
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+
+      ## Container-specific security context configuration
+      ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+      ##

@@ -1,0 +1,70 @@
+
+  ## Prometheus-config-reloader
+  ##
+  prometheusConfigReloader:
+    image:
+      registry: quay.io
+      repository: prometheus-operator/prometheus-config-reloader
+      # if not set appVersion field from Chart.yaml is used
+      tag: ""
+      sha: ""
+
+    # add prometheus config reloader liveness and readiness probe. Default: false
+    enableProbe: false
+
+    # resource config for prometheusConfigReloader
+    resources: {}
+      # requests:
+      #   cpu: 200m
+      #   memory: 50Mi
+      # limits:
+      #   cpu: 200m
+      #   memory: 50Mi
+
+  ## Thanos side-car image when configured
+  ##
+  thanosImage:
+    registry: quay.io
+    repository: thanos/thanos
+    tag: v0.40.1
+    sha: ""
+
+  ## Set a Label Selector to filter watched prometheus and prometheusAgent
+  ##
+  prometheusInstanceSelector: ""
+
+  ## Set a Label Selector to filter watched alertmanager
+  ##
+  alertmanagerInstanceSelector: ""
+
+  ## Set a Label Selector to filter watched thanosRuler
+  thanosRulerInstanceSelector: ""
+
+  ## Set a Field Selector to filter watched secrets
+  ##
+  secretFieldSelector: "type!=kubernetes.io/dockercfg,type!=kubernetes.io/service-account-token,type!=helm.sh/release.v1"
+
+  ## If false then the user will opt out of automounting API credentials.
+  ##
+  automountServiceAccountToken: true
+
+  ## Additional volumes
+  ##
+  extraVolumes: []
+
+  ## Additional volume mounts
+  ##
+  extraVolumeMounts: []
+
+## Deploy a Prometheus instance
+##
+prometheus:
+  enabled: true
+
+  ## Toggle prometheus into agent mode
+  ## Note many of features described below (e.g. rules, query, alerting, remote read, thanos) will not work in agent mode.
+  ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/platform/prometheus-agent.md
+  ##
+  agentMode: false
+
+  ## Annotations for Prometheus
