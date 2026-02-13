@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - serviceaccount.yaml
+  - rbac.yaml
+  - config.yaml
+  - exporter-config.yaml
+  - module.yaml
+  - resolver.yaml
+  - listener.yaml
+  - controller-ingressclass.yaml
+  - podsecuritypolicy.yaml
+  - deployment.yaml
+  - deployment-canary.yaml
+  - service.yaml
+  - service-canary.yaml
+  - admin-service.yaml
+  - ambassador-agent.yaml
+  - hpa.yaml
+  - pdb.yaml
+  - servicemonitor.yaml
