@@ -2,7 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - global-overrides.yaml
   - crd-management.yaml
   - rbac-and-security.yaml
   - windows-monitoring.yaml
@@ -39,10 +38,3 @@ resources:
   - thanosruler-service.yaml
   - thanosruler-spec.yaml
   - extra-manifests.yaml
-
-# Apply staging-specific patches here
-patchesStrategicMerge:
-  - staging-patches.yaml
-
-# Configure resource name prefixes/suffixes for staging
-nameSuffix: -staging
